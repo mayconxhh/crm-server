@@ -1,0 +1,146 @@
+type Cliente {
+	id: ID
+	nombre: String!
+	apellido: String!
+	empresa: String!
+	emails: [Email]
+	tipo: TipoCliente!
+	edad: Int!
+	vendedor: ID
+}
+type Email{
+	email: String!
+}
+type Producto{
+	id: ID
+	nombre: String!
+	precio: Int!
+	stock: Int!
+}
+type Pedido{
+	id: ID
+	pedidos: [PedidoProducto]
+	total: Int
+	fecha: String
+	cliente: String
+	estado: TipoEstado
+}
+
+type Usuario{
+	id: ID
+	usuario: String!
+	password: String!
+	nombre: String!
+	rol: String!
+}
+
+enum TipoCliente{
+	BASICO
+	PREMIUM
+}
+
+enum TipoEstado{
+	COMPLETADO
+	PENDIENTE
+	CANCELADO
+}
+
+type PedidoProducto{
+	id: ID
+	cantidad: Int
+}
+
+type ClienteTotal {
+	total: Float
+	cliente: [ Cliente ]
+}
+
+type Token{
+	token: String!
+}
+
+type UsuarioV{
+	id: ID!
+	usuario: String!
+	nombre: String!
+	rol: String!
+}
+
+input PedidoProductoInput{
+	id: ID
+	cantidad: Int
+}
+input EmailInput{
+	email: String!
+}
+input ClienteInput{
+	id: ID
+	nombre: String!
+	apellido: String!
+	empresa: String!
+	tipo: TipoCliente!
+	edad: Int!
+	emails: [EmailInput]
+	vendedor: ID
+}
+input ProductoInput{
+	id: ID
+	nombre: String!
+	precio: Int!
+	stock: Int!
+}
+input PedidoInput{
+	id: ID
+	pedidos: [PedidoProductoInput]
+	anteriorEstado: TipoEstado
+	total: Int
+	fecha: String
+	cliente: String
+	estado: TipoEstado
+}
+input UsuarioInput{
+	id: ID
+	usuario: String!
+	password: String!
+	nombre: String!
+	rol: String!
+}
+
+input UsuarioLoginInput{
+	usuario: String!
+	password: String!
+}
+
+type Query {
+	getClientes(limite: Int, offset: Int, vendedor: String): [ Cliente ]
+	getCliente(id: ID): Cliente
+	totalClientes( vendedor: String ): String
+
+	getProductos(limite: Int, offset: Int): [ Producto ]
+	getProducto(id: ID): Producto
+	totalProductos: String
+
+	getPedidos(cliente: ID, limite: Int, offset: Int) : [ Pedido ]
+
+	topClientes: [ClienteTotal]
+
+	getUsuario : UsuarioV
+}
+""" Mutation para crear nuevos clientes """
+type Mutation {
+	#Nombre del resolver, creacion de nuevo cliente!
+	""" Te permite crear nuevos clientes """
+	crearCliente(input: ClienteInput) : Cliente
+	actualizarCliente(input: ClienteInput) : Cliente
+	eliminarCliente(id: ID) : String
+
+	nuevoProducto(input: ProductoInput): Producto
+	actualizarProducto(input: ProductoInput): Producto
+	eliminarProducto(id: ID): String
+
+	nuevoPedido(input: PedidoInput) : Pedido
+	actualizarPedido(input: PedidoInput): Pedido
+
+	nuevoUsuario(input: UsuarioInput) : String
+	autenticarUsuario( input: UsuarioLoginInput ) : Token
+}
